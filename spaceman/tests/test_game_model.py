@@ -167,14 +167,12 @@ class GameModelTests( TestCase ):
             letters_guessed = initialLettersGuessed.copy(),
             guesses_allowed= 5, 
             guesses_taken= 2,
-            is_game_over = False
         )
 
         guess = 'Q'
         game.handleGuess(guess)
-        expectedEnding = False
-
-        self.assertEquals( expectedEnding, game.is_game_over)
+        expectedLettersGuessed = initialLettersGuessed + [guess]
+        self.assertEquals( game.is_game_over,  False )
 
 
 
@@ -182,7 +180,33 @@ class GameModelTests( TestCase ):
         pass
 
     def test_is_game_over_is_true_if_no_guesses_left( self ):
-        pass
+        initialLettersGuessed = ['S', 'A', 'W', 'O', 'R','C', 'B', 'D']
+        game = Game( 
+            word= 'TESTWORD',
+            guessed_word_state= ['','','S','','W','O','R',''],
+            letters_guessed = initialLettersGuessed.copy(),
+            guesses_allowed= 5, 
+            #This is the last guess
+            guesses_taken= 4
+        )
+
+        guess = 'X'
+        game.handleGuess(guess)
+        expectedLettersGuessed = initialLettersGuessed + [guess]
+        self.assertEquals( game.is_game_over,  True )
 
     def test_is_game_over_is_true_if_all_letters_guessed( self ):
-        pass
+        initialLettersGuessed = ['S', 'A', 'W', 'O', 'R','C', 'T', 'E']
+        game = Game( 
+            word= 'TESTWORD',
+            guessed_word_state= ['T','E','S','T','W','O','R',''],
+            letters_guessed = initialLettersGuessed.copy(),
+            guesses_allowed= 5,
+            guesses_taken= 2,
+        )
+
+        #still have guesses, but the next guess completes it - should give game over
+        guess = 'D'
+        game.handleGuess(guess)
+        expectedLettersGuessed = initialLettersGuessed + [guess]
+        self.assertEquals( game.is_game_over,  True )
